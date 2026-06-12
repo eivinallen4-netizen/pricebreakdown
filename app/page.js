@@ -6,6 +6,7 @@ import { DEFAULT_DATA, totalValue, savings, discountPct, money } from '../lib/de
 import Editor from '../components/Editor'
 
 const PdfPanel = dynamic(() => import('../components/PdfPanel'), { ssr: false })
+const MobileDownload = dynamic(() => import('../components/MobileDownload'), { ssr: false })
 
 export default function ProposalBuilderPage() {
   const [data, setData] = useState(DEFAULT_DATA)
@@ -26,12 +27,17 @@ export default function ProposalBuilderPage() {
         <div className="sticky top-0 bg-white z-10">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h1 className="text-base font-bold tracking-tight text-gray-900">{data.companyName || 'Proposal Builder'}</h1>
-            <button
-              onClick={handleReset}
-              className="text-xs text-gray-400 hover:text-gray-700 border border-gray-200 rounded px-2.5 py-1 transition-colors"
-            >
-              Reset
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="lg:hidden">
+                <MobileDownload data={data} />
+              </div>
+              <button
+                onClick={handleReset}
+                className="text-xs text-gray-400 hover:text-gray-700 border border-gray-200 rounded px-2.5 py-1 transition-colors"
+              >
+                Reset
+              </button>
+            </div>
           </div>
           {/* Running totals — visible while building the package */}
           <div className="flex items-center gap-3 px-5 py-2 text-xs text-gray-500 bg-gray-50 border-b border-gray-100 flex-wrap">
@@ -53,8 +59,8 @@ export default function ProposalBuilderPage() {
         </div>
       </div>
 
-      {/* Right pane: PDF preview */}
-      <div className="flex-1 bg-gray-200 flex flex-col min-h-[60vh] lg:min-h-0 lg:h-full">
+      {/* Right pane: PDF preview — desktop only */}
+      <div className="hidden lg:flex flex-1 bg-gray-200 flex-col lg:h-full">
         <PdfPanel data={data} />
       </div>
     </div>

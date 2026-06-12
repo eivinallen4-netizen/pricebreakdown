@@ -6,6 +6,7 @@ import ProposalPDF from './ProposalPDF'
 
 export default function PdfPanel({ data }) {
   const [mounted, setMounted] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -14,7 +15,22 @@ export default function PdfPanel({ data }) {
   if (!mounted) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
-        Loading preview…
+        Loading…
+      </div>
+    )
+  }
+
+  if (!loaded) {
+    return (
+      <div className="flex-1 flex items-center justify-center flex-col gap-4">
+        <p className="text-sm text-gray-400">PDF preview not loaded</p>
+        <button
+          onClick={() => setLoaded(true)}
+          className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+          style={{ backgroundColor: data.accent }}
+        >
+          Load Preview
+        </button>
       </div>
     )
   }
@@ -48,6 +64,12 @@ export default function PdfPanel({ data }) {
           {({ loading }) => (loading ? 'Preparing…' : 'Download PDF')}
         </PDFDownloadLink>
         <span className="text-xs text-gray-500">{filename}</span>
+        <button
+          onClick={() => setLoaded(false)}
+          className="ml-auto text-xs text-gray-400 hover:text-gray-600 border border-gray-300 rounded px-2 py-1 transition-colors"
+        >
+          Unload
+        </button>
       </div>
 
       {/* PDF viewer */}
