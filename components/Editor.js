@@ -142,7 +142,7 @@ function Toggle({ active, accent, onChange, label, sub }) {
       role="switch"
       aria-checked={active}
       onClick={onChange}
-      className="flex items-center gap-3 w-full py-1.5 text-left"
+      className="flex items-center gap-3 w-full py-2.5 text-left"
     >
       <div
         className="w-8 h-[18px] rounded-full flex items-center px-[3px] transition-colors shrink-0"
@@ -353,7 +353,7 @@ export default function Editor({ data, setData }) {
                 <button
                   key={item.name}
                   onClick={() => toggleItem(item)}
-                  className="flex items-center justify-between px-3 py-2 rounded border text-sm text-left transition-all"
+                  className="flex items-center justify-between px-3 py-2.5 rounded border text-sm text-left transition-all"
                   style={
                     active
                       ? { backgroundColor: data.accent, borderColor: data.accent, color: 'white' }
@@ -571,7 +571,7 @@ export default function Editor({ data, setData }) {
         ))}
       </div>
 
-      <div className="pb-8" />
+      <div className="pb-20 lg:pb-8" />
     </div>
   )
 }

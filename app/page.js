@@ -10,6 +10,7 @@ const MobileDownload = dynamic(() => import('../components/MobileDownload'), { s
 
 export default function ProposalBuilderPage() {
   const [data, setData] = useState(DEFAULT_DATA)
+  const [tab, setTab] = useState('edit')
 
   const tv = totalValue(data.items)
   const sv = savings(data.items, data.price)
@@ -20,27 +21,32 @@ export default function ProposalBuilderPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full overflow-hidden">
-      {/* Left pane: editor */}
-      <div className="lg:w-[420px] w-full shrink-0 flex flex-col bg-white overflow-y-auto lg:h-full border-r border-gray-200">
-        {/* Sticky header + stats strip */}
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-48px)] lg:h-full overflow-hidden">
+      {/* Edit pane */}
+      <div
+        className={[
+          'lg:flex lg:w-105 w-full shrink-0 flex-col bg-white h-full border-r border-gray-200 overflow-y-auto',
+          tab === 'edit' ? 'flex' : 'hidden',
+        ].join(' ')}
+      >
+        {/* Sticky header */}
         <div className="sticky top-0 bg-white z-10">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h1 className="text-base font-bold tracking-tight text-gray-900">{data.companyName || 'Proposal Builder'}</h1>
-            <div className="flex items-center gap-2">
-              <div className="lg:hidden">
-                <MobileDownload data={data} />
-              </div>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <h1 className="text-sm font-bold tracking-tight text-gray-900 truncate pr-2">
+              {data.companyName || 'Proposal Builder'}
+            </h1>
+            <div className="flex items-center gap-2 shrink-0">
+              <MobileDownload data={data} />
               <button
                 onClick={handleReset}
-                className="text-xs text-gray-400 hover:text-gray-700 border border-gray-200 rounded px-2.5 py-1 transition-colors"
+                className="text-xs text-gray-400 hover:text-gray-700 border border-gray-200 rounded px-2.5 py-1.5 transition-colors"
               >
                 Reset
               </button>
             </div>
           </div>
-          {/* Running totals — visible while building the package */}
-          <div className="flex items-center gap-3 px-5 py-2 text-xs text-gray-500 bg-gray-50 border-b border-gray-100 flex-wrap">
+          {/* Running totals */}
+          <div className="flex items-center gap-2 px-4 py-2 text-xs text-gray-500 bg-gray-50 border-b border-gray-100 flex-wrap">
             <span><strong className="text-gray-800">{data.items.length}</strong> items</span>
             <span className="text-gray-300">·</span>
             <span>Value <strong className="text-gray-800">{money(tv)}</strong></span>
@@ -49,20 +55,48 @@ export default function ProposalBuilderPage() {
             {sv > 0 && (
               <>
                 <span className="text-gray-300">·</span>
-                <span className="font-semibold text-green-600">Client saves {money(sv)} ({dp}%)</span>
+                <span className="font-semibold text-green-600">Saves {money(sv)} ({dp}%)</span>
               </>
             )}
           </div>
         </div>
-        <div className="px-5 py-5 flex-1">
+
+        {/* Editor content */}
+        <div className="px-4 py-5 flex-1">
           <Editor data={data} setData={setData} />
         </div>
       </div>
 
-      {/* Right pane: PDF preview — desktop only */}
-      <div className="hidden lg:flex flex-1 bg-gray-200 flex-col lg:h-full">
+      {/* Preview pane */}
+      <div
+        className={[
+          'lg:flex flex-1 bg-gray-200 flex-col h-full',
+          tab === 'preview' ? 'flex' : 'hidden',
+        ].join(' ')}
+      >
         <PdfPanel data={data} />
       </div>
+
+      {/* Mobile tab bar */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 flex bg-white border-t border-gray-200 z-50">
+        {[
+          { key: 'edit', label: 'Edit' },
+          { key: 'preview', label: 'Preview PDF' },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className="flex-1 py-3 text-sm font-semibold transition-colors"
+            style={
+              tab === key
+                ? { color: data.accent, borderTop: `2px solid ${data.accent}` }
+                : { color: '#9CA3AF', borderTop: '2px solid transparent' }
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
     </div>
   )
 }
